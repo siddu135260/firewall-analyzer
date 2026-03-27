@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+        h1 {
+            color: #333;
+        }
+        .data-section, .chart-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+        }
+        pre {
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Dashboard</h1>
+
+    <div class="data-section">
+        <h2>Data</h2>
+        <pre>{{ data }}</pre>
+    </div>
+
+    <div class="chart-section">
+        <h2>Chart</h2>
+        {% if chart %}
+            <img src="{{ chart }}" alt="Chart Image" style="max-width:100%;">
+        {% else %}
+            <p>No chart available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
