@@ -32,6 +32,8 @@
             background: #38bdf8;
             border: none;
             cursor: pointer;
+            color: black;
+            font-weight: bold;
         }
 
         table {
@@ -63,7 +65,7 @@
 
 <div class="upload-box">
     <form method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
+        <input type="file" name="file" required>
         <button>Upload CSV</button>
     </form>
 </div>
@@ -90,6 +92,7 @@
 
 <br>
 
+<!-- Data Table -->
 <table>
     <tr>
         <th>Source IP</th>
@@ -108,8 +111,9 @@
     {% endfor %}
 </table>
 
+<!-- Charts -->
 {% if chart %}
-<h2>📊 Traffic Analysis</h2>
+<h2>📊 Attack vs Safe Traffic</h2>
 <img src="{{ url_for('static', filename='chart.png') }}" width="400">
 
 <h2>📊 Top Attacker IPs</h2>
