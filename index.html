@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firewall Analyzer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+        }
+
+        h1 {
+            color: #38bdf8;
+        }
+
+        .card {
+            display: inline-block;
+            padding: 20px;
+            margin: 10px;
+            background: #1e293b;
+            border-radius: 10px;
+            width: 200px;
+        }
+
+        .upload-box {
+            margin: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #38bdf8;
+            border: none;
+            cursor: pointer;
+        }
+
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 90%;
+            background: #1e293b;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #334155;
+        }
+
+        th {
+            background: #334155;
+        }
+
+        img {
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🔥 Firewall Analyzer Dashboard</h1>
+
+<div class="upload-box">
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button>Upload CSV</button>
+    </form>
+</div>
+
+<!-- Stats Cards -->
+{% if data %}
+<div>
+    <div class="card">
+        <h3>Total Logs</h3>
+        <p>{{ data|length }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Attacks</h3>
+        <p>{{ data | selectattr('status','equalto','Attack') | list | length }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Safe</h3>
+        <p>{{ data | selectattr('status','equalto','Safe') | list | length }}</p>
+    </div>
+</div>
+{% endif %}
+
+<br>
+
+<table>
+    <tr>
+        <th>Source IP</th>
+        <th>Destination IP</th>
+        <th>Action</th>
+        <th>Status</th>
+    </tr>
+
+    {% for row in data %}
+    <tr style="background-color: {% if row.status == 'Attack' %}#7f1d1d{% else %}#14532d{% endif %};">
+        <td>{{ row.source_ip }}</td>
+        <td>{{ row.destination_ip }}</td>
+        <td>{{ row.action }}</td>
+        <td>{{ row.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if chart %}
+<h2>📊 Traffic Analysis</h2>
+<img src="{{ url_for('static', filename='chart.png') }}" width="400">
+
+<h2>📊 Top Attacker IPs</h2>
+<img src="{{ url_for('static', filename='top_ips.png') }}" width="500">
+{% endif %}
+
+</body>
+</html>

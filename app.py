@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, url_for
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
 
