@@ -1,124 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Firewall Analyzer Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
     <style>
         body {
-            font-family: Arial;
-            background: #0f172a;
-            color: white;
-            text-align: center;
-        }
-
-        h1 {
-            color: #38bdf8;
-        }
-
-        .card {
-            display: inline-block;
+            font-family: Arial, sans-serif;
             padding: 20px;
-            margin: 10px;
-            background: #1e293b;
-            border-radius: 10px;
-            width: 200px;
+            background-color: #f2f2f2;
         }
-
-        .upload-box {
-            margin: 20px;
+        h1 {
+            color: #333;
         }
-
-        button {
-            padding: 10px 20px;
-            background: #38bdf8;
-            border: none;
-            cursor: pointer;
-            color: black;
-            font-weight: bold;
-        }
-
-        table {
-            margin: auto;
-            border-collapse: collapse;
-            width: 90%;
-            background: #1e293b;
-        }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid #334155;
-        }
-
-        th {
-            background: #334155;
-        }
-
-        img {
+        .data-section, .chart-section {
             margin-top: 20px;
-            border-radius: 10px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+        }
+        pre {
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
         }
     </style>
 </head>
-
 <body>
+    <h1>Welcome to the Dashboard</h1>
 
-<h1>🔥 Firewall Analyzer Dashboard</h1>
-
-<div class="upload-box">
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="file" required>
-        <button>Upload CSV</button>
-    </form>
-</div>
-
-<!-- Stats Cards -->
-{% if data %}
-<div>
-    <div class="card">
-        <h3>Total Logs</h3>
-        <p>{{ data|length }}</p>
+    <div class="data-section">
+        <h2>Data</h2>
+        <pre>{{ data }}</pre>
     </div>
 
-    <div class="card">
-        <h3>Attacks</h3>
-        <p>{{ data | selectattr('status','equalto','Attack') | list | length }}</p>
+    <div class="chart-section">
+        <h2>Chart</h2>
+        {% if chart %}
+            <img src="{{ chart }}" alt="Chart Image" style="max-width:100%;">
+        {% else %}
+            <p>No chart available.</p>
+        {% endif %}
     </div>
-
-    <div class="card">
-        <h3>Safe</h3>
-        <p>{{ data | selectattr('status','equalto','Safe') | list | length }}</p>
-    </div>
-</div>
-{% endif %}
-
-<br>
-
-<!-- Data Table -->
-<table>
-    <tr>
-        <th>Source IP</th>
-        <th>Destination IP</th>
-        <th>Action</th>
-        <th>Status</th>
-    </tr>
-
-    {% for row in data %}
-    <tr style="background-color: {% if row.status == 'Attack' %}#7f1d1d{% else %}#14532d{% endif %};">
-        <td>{{ row.source_ip }}</td>
-        <td>{{ row.destination_ip }}</td>
-        <td>{{ row.action }}</td>
-        <td>{{ row.status }}</td>
-    </tr>
-    {% endfor %}
-</table>
-
-<!-- Charts -->
-{% if chart %}
-<h2>📊 Attack vs Safe Traffic</h2>
-<img src="{{ url_for('static', filename='chart.png') }}" width="400">
-
-<h2>📊 Top Attacker IPs</h2>
-<img src="{{ url_for('static', filename='top_ips.png') }}" width="500">
-{% endif %}
-
 </body>
 </html>

@@ -1,54 +1,33 @@
-from flask import Flask, render_template, request, url_for
-import pandas as pd
-import matplotlib
-matplotlib.use('Agg')
+from flask import Flask, render_template
 import matplotlib.pyplot as plt
-import os
+import io
+import base64
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    data = []
-    chart = False
+    # Example data
+    data = {"Apples": 10, "Oranges": 15, "Bananas": 7}
 
-    if request.method == 'POST':
-        file = request.files.get('file')
+    # Create a matplotlib figure
+    fig, ax = plt.subplots()
+    ax.bar(data.keys(), data.values())
+    ax.set_title("Fruit Count")
 
-        if file and file.filename != '':
-            df = pd.read_csv(file)
+    # Save figure to a BytesIO buffer
+    buf = io.BytesIO()
+    fig.savefig(buf, format='png', bbox_inches='tight')
+    buf.seek(0)
 
-            df['status'] = df['action'].apply(
-                lambda x: 'Attack' if str(x).lower() == 'deny' else 'Safe'
-            )
+    # Encode as base64 string
+    chart_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    chart = f"data:image/png;base64,{chart_base64}"
 
-            data = df.to_dict(orient='records')
-
-            os.makedirs("static", exist_ok=True)
-
-            # Pie chart
-            counts = df['status'].value_counts()
-            plt.figure()
-            counts.plot(kind='pie', autopct='%1.1f%%')
-            plt.title("Attack vs Safe")
-            plt.ylabel("")
-            plt.savefig("static/chart.png")
-            plt.close()
-
-            # Top attackers
-            attack_df = df[df['status'] == 'Attack']
-            if not attack_df.empty:
-                top_ips = attack_df['source_ip'].value_counts().head(5)
-
-                plt.figure()
-                top_ips.plot(kind='bar')
-                plt.title("Top Attacker IPs")
-                plt.savefig("static/top_ips.png")
-                plt.close()
-
-            chart = True
+    # Close figure to free memory
+    plt.close(fig)
 
     return render_template('index.html', data=data, chart=chart)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
