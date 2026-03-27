@@ -26,6 +26,7 @@ def index():
 
             os.makedirs("static", exist_ok=True)
 
+            # Pie chart
             counts = df['status'].value_counts()
             plt.figure()
             counts.plot(kind='pie', autopct='%1.1f%%')
@@ -34,6 +35,7 @@ def index():
             plt.savefig("static/chart.png")
             plt.close()
 
+            # Top attackers
             attack_df = df[df['status'] == 'Attack']
             if not attack_df.empty:
                 top_ips = attack_df['source_ip'].value_counts().head(5)
